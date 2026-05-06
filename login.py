@@ -73,8 +73,14 @@ def sha(text):
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 class LoginApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, on_success=None):
+        """
+        on_success : callable | None
+            Jika diberikan, akan dipanggil dengan argumen (username: str)
+            setelah login berhasil, kemudian window login ditutup otomatis.
+        """
         super().__init__()
+        self._on_success = on_success  # callback ke main
 
         self.title("ChatApp — Login")
         self.geometry("420x580")
@@ -373,9 +379,15 @@ class LoginApp(ctk.CTk):
                 cur.close(); conn.close()
 
                 if user:
-                    self.after(0, lambda: self._show_success(
-                        "Login Berhasil! 🎉",
-                        f"Selamat datang, {user['username']}!"))
+                    uname = user['username']
+                    if self._on_success:
+                        # Ada callback → tutup window login, buka window berikutnya
+                        self.after(0, lambda u=uname: self._handle_success(u))
+                    else:
+                        # Tidak ada callback → tampilkan dialog sukses seperti semula
+                        self.after(0, lambda: self._show_success(
+                            "Login Berhasil! 🎉",
+                            f"Selamat datang, {uname}!"))
                     self.after(0, self._reset_login_btn)
                 else:
                     self.after(0, lambda: self._show_alert("Username atau password salah."))
@@ -389,6 +401,12 @@ class LoginApp(ctk.CTk):
 
     def _reset_login_btn(self):
         self.btn_login.configure(state="normal", text="Masuk")
+
+    def _handle_success(self, username: str):
+        """Tutup window login lalu jalankan callback on_success."""
+        self.destroy()                   # tutup LoginApp
+        if self._on_success:
+            self._on_success(username)   # buka window berikutnya
 
     # ── Register action ───────────────────────────────────────────────────────
     def _do_register(self):
