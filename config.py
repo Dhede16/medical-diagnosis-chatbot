@@ -44,3 +44,20 @@ Ketika pengguna menyebutkan gejala, kamu harus:
 
 Gunakan bahasa Indonesia yang ramah dan mudah dipahami. Format respons dengan rapi menggunakan markdown.
 Jika pengguna menanyakan hal di luar gejala/kesehatan, arahkan kembali ke topik medis dengan sopan."""
+
+# Warna manual (mirip ChatGPT dark)
+C = {
+    "bg":         "#212121",
+    "card":       "#2f2f2f",
+    "input":      "#3c3c3c",
+    "input_hover":"#444444",
+    "border":     "#4a4a4a",
+    "accent":     "#10a37f",
+    "accent_hov": "#0d8f6f",
+    "text":       "#ececec",
+    "text_muted": "#9b9b9b",
+    "error":      "#ef4444",
+    "success":    "#10a37f",
+    "tab_active": "#3c3c3c",
+    "tab_inactive":"#272727",
+}
