@@ -4,6 +4,7 @@ Jalankan: python login_app.py
 Install : pip install customtkinter mysql-connector-python
 """
 
+from config import C 
 import customtkinter as ctk
 import mysql.connector
 from mysql.connector import Error
@@ -18,28 +19,12 @@ DB_CONFIG = {
     "password": "",        # isi jika XAMPP pakai password
     "port":     3306,
 }
-DB_NAME = "login_app"
+DB_NAME = "db_carebot_app"
 
 # ─── Tema ─────────────────────────────────────────────────────────────────────
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("green")
 
-# Warna manual (mirip ChatGPT dark)
-C = {
-    "bg":         "#212121",
-    "card":       "#2f2f2f",
-    "input":      "#3c3c3c",
-    "input_hover":"#444444",
-    "border":     "#4a4a4a",
-    "accent":     "#10a37f",
-    "accent_hov": "#0d8f6f",
-    "text":       "#ececec",
-    "text_muted": "#9b9b9b",
-    "error":      "#ef4444",
-    "success":    "#10a37f",
-    "tab_active": "#3c3c3c",
-    "tab_inactive":"#272727",
-}
 
 # ─── Database Setup ───────────────────────────────────────────────────────────
 def setup_database():
@@ -82,7 +67,7 @@ class LoginApp(ctk.CTk):
         super().__init__()
         self._on_success = on_success  # callback ke main
 
-        self.title("ChatApp — Login")
+        self.title("CareBot — Login")
         self.geometry("420x580")
         self.minsize(380, 520)
         self.resizable(True, True)
