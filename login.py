@@ -4,57 +4,15 @@ Jalankan: python login_app.py
 Install : pip install customtkinter mysql-connector-python
 """
 
+from typing import Any, cast
+from database import setup_database, get_conn, sha, DB_CONFIG, DB_NAME
 from config import C 
 import customtkinter as ctk
 import mysql.connector
 from mysql.connector import Error
 import hashlib
 import threading
-import time
 
-# ─── Konfigurasi Database ─────────────────────────────────────────────────────
-DB_CONFIG = {
-    "host":     "localhost",
-    "user":     "root",
-    "password": "",        # isi jika XAMPP pakai password
-    "port":     3306,
-}
-DB_NAME = "db_carebot_app"
-
-# ─── Tema ─────────────────────────────────────────────────────────────────────
-ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("green")
-
-
-# ─── Database Setup ───────────────────────────────────────────────────────────
-def setup_database():
-    try:
-        conn = mysql.connector.connect(**DB_CONFIG)
-        cur  = conn.cursor()
-        cur.execute(f"CREATE DATABASE IF NOT EXISTS {DB_NAME}")
-        cur.execute(f"USE {DB_NAME}")
-        cur.execute("""
-            CREATE TABLE IF NOT EXISTS users (
-                id         INT AUTO_INCREMENT PRIMARY KEY,
-                username   VARCHAR(50) UNIQUE NOT NULL,
-                password   VARCHAR(64) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )
-        """)
-        demo_pw = hashlib.sha256("admin123".encode()).hexdigest()
-        cur.execute("INSERT IGNORE INTO users (username,password) VALUES (%s,%s)",
-                    ("admin", demo_pw))
-        conn.commit()
-        cur.close(); conn.close()
-        return True, "Database siap."
-    except Error as e:
-        return False, str(e)
-
-def get_conn():
-    return mysql.connector.connect(**DB_CONFIG, database=DB_NAME)
-
-def sha(text):
-    return hashlib.sha256(text.encode()).hexdigest()
 
 # ─── App ──────────────────────────────────────────────────────────────────────
 class LoginApp(ctk.CTk):
@@ -360,11 +318,11 @@ class LoginApp(ctk.CTk):
                     "SELECT * FROM users WHERE username=%s AND password=%s",
                     (username, sha(password))
                 )
-                user = cur.fetchone()
+                user = cast(dict[str, Any] | None, cur.fetchone())
                 cur.close(); conn.close()
 
                 if user:
-                    uname = user['username']
+                    uname = str(user['username'])
                     if self._on_success:
                         # Ada callback → tutup window login, buka window berikutnya
                         self.after(0, lambda u=uname: self._handle_success(u))

@@ -44,7 +44,7 @@ class ChatBubble(ctk.CTkFrame):
             fg_color=(USER_BUBBLE, USER_BUBBLE),
             border_width=0,
             corner_radius=18,
-            text_color=(TEXT_PRIMARY, TEXT_PRIMARY),
+            text_color= TEXT_PRIMARY,
             font=ctk.CTkFont(family=FONT_FAMILY, size=14),
             cursor="arrow",
             width=MAX_WIDTH,
@@ -83,7 +83,7 @@ class ChatBubble(ctk.CTkFrame):
             fg_color="transparent",
             border_width=0,
             corner_radius=0,
-            text_color=(TEXT_PRIMARY, TEXT_PRIMARY),
+            text_color= TEXT_PRIMARY,
             font=ctk.CTkFont(family=FONT_FAMILY, size=14),
             cursor="arrow",
         )

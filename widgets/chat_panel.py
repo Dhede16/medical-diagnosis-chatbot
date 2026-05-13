@@ -133,7 +133,7 @@ class ChatPanel(ctk.CTkFrame):
             border_width=0,
             corner_radius=0,
             wrap="word",
-            text_color=(TEXT_PRIMARY, TEXT_PRIMARY),
+            text_color= TEXT_PRIMARY,
             scrollbar_button_color=(BG_INPUT, BG_INPUT),
             scrollbar_button_hover_color=(BG_INPUT, BG_INPUT),
         )
