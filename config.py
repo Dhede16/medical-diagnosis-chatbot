@@ -1,12 +1,23 @@
 """
 config.py — Konstanta warna, font, dan pengaturan aplikasi MedAI.
 
-UNTUK DEVELOPER: Isi GROQ_API_KEY di bawah sebelum distribusi.
-Dapatkan key gratis di: https://console.groq.com -> API Keys
+⚠️ PENTING: ISI GROQ_API_KEY DI BAWAH SEBELUM MENJALANKAN APLIKASI
+
+Cara mendapatkan API Key:
+1. Buka https://console.groq.com
+2. Login/Register dengan akun Anda
+3. Pergi ke Settings → API Keys
+4. Click "Create New API Key"
+5. Copy API Key 
+6. Paste di bawah, ganti placeholder
+
+Butuh bantuan? Baca: FIX_API_GUIDE.md
 """
 
-# ── Groq API Key — ISI DI SINI ───────────────────────────────────────────────
-GROQ_API_KEY  = "gsk_XXXXXXXXXXXXXXXXXXXXXXXX"   # <-- ganti dengan key Anda
+# ── Groq API Key — MASUKKAN API KEY ANDA DI SINI ────────────────────────────
+# Format: gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# Jangan gunakan yang ini, ambil dari https://console.groq.com
+GROQ_API_KEY  = "API KEY HERE"   # ← ISI DISINI!
 
 # ── Model Groq ───────────────────────────────────────────────────────────────
 GROQ_MODEL    = "llama-3.3-70b-versatile"

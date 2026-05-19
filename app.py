@@ -18,7 +18,7 @@ ctk.set_default_color_theme("dark-blue")
 
 
 class MedAIApp(ctk.CTk):
-    def __init__(self):
+    def __init__(self, username: str = None):
         super().__init__()
         self.title("MedAI — Asisten Prediksi Penyakit")
         self.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
@@ -27,8 +27,12 @@ class MedAIApp(ctk.CTk):
         self._api_key = GROQ_API_KEY
         self._history = [{"role": "system", "content": SYSTEM_PROMPT}]
         self._worker  = None
+        self._username = username or "demo_user"
+        self._current_chat_title = ""
+        self._is_new_chat = True
 
         self._build()
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     def _build(self):
         self.grid_rowconfigure(0, weight=1)
@@ -37,8 +41,7 @@ class MedAIApp(ctk.CTk):
         # Sidebar
         self._sidebar = Sidebar(
             self,
-            on_new_chat   = self._new_chat,
-            on_clear_chat = self._new_chat,
+            on_new_chat = self._new_chat,
         )
         self._sidebar.grid(row=0, column=0, sticky="nsew")
         self._sidebar.configure(width=SIDEBAR_WIDTH)
@@ -51,6 +54,8 @@ class MedAIApp(ctk.CTk):
         self._chat = ChatPanel(self, on_send=self._handle_send)
         self._chat.grid(row=0, column=1, sticky="nsew")
 
+
+
     # ── Handlers ─────────────────────────────────────────────────────────
     def _handle_send(self, text: str):
         if not self._api_key or self._api_key.startswith("gsk_XXX"):
@@ -61,8 +66,8 @@ class MedAIApp(ctk.CTk):
             )
             return
 
+        self._is_new_chat = False  # Chat sudah ada isinya
         self._chat.add_user_bubble(text)
-        self._sidebar.add_history_item(text)
         self._history.append({"role": "user", "content": text})
 
         self._chat.show_typing()
@@ -91,6 +96,14 @@ class MedAIApp(ctk.CTk):
         self._chat.set_input_enabled(True)
 
     def _new_chat(self):
+        """Buat chat baru: reset ke state awal (fresh start)."""
         self._chat.clear_chat()
         self._history = [{"role": "system", "content": SYSTEM_PROMPT}]
-        self._sidebar.clear_history_ui()
+        self._is_new_chat = True
+        self._current_chat_title = ""
+
+    def on_closing(self):
+        """Handle window close: cleanup threads."""
+        if self._worker and self._worker.is_alive():
+            pass  # Thread daemon akan otomatis terminate
+        self.destroy()

@@ -6,6 +6,18 @@ Aplikasi desktop chat berbasis **CustomTkinter** yang menggunakan **Groq API** (
 
 ---
 
+## 📑 Daftar Isi
+
+- [Fitur](#-fitur)
+- [Tampilan](#-tampilan)
+- [Instalasi & Menjalankan](#-instalasi--menjalankan)
+- [Struktur Proyek](#-struktur-proyek)
+- [Konfigurasi](#-konfigurasi)
+- [Persyaratan Sistem](#-persyaratan-sistem)
+- [Lisensi](#-lisensi)
+
+---
+
 ## ✨ Fitur
 
 | Fitur | Keterangan |
@@ -100,9 +112,9 @@ medai-ctk/
 ├── widgets/
 │   ├── __init__.py
 │   ├── chat_bubble.py      # Gelembung pesan user/bot
-│   ├── typing_indicator.py # Animasi "sedang mengetik"
-│   ├── sidebar.py          # Panel kiri (API key, tema, dll)
-│   └── chat_panel.py       # Panel kanan (chat + input)
+│   ├── chat_panel.py       # Panel kanan (chat + input)
+│   ├── sidebar.py          # Panel kiri (sejarah, pengaturan)
+│   └── typing_indicator.py # Animasi "sedang mengetik"
 │
 └── utils/
     ├── __init__.py
@@ -129,13 +141,26 @@ Edit `config.py` untuk mengubah:
 
 ## 🛠 Persyaratan Sistem
 
-- Python **3.10+**
-- OS: Windows 10/11, macOS 11+, Ubuntu 20.04+
-- Koneksi internet (untuk Groq API)
-- Dependensi: `customtkinter>=5.2.0` (tidak ada library lain selain stdlib)
+- **Python**: 3.10+
+- **OS**: Windows 10/11, macOS 11+, Ubuntu 20.04+
+- **Internet**: Koneksi untuk Groq API
+- **Database**: MySQL Server (XAMPP)
+- **Dependensi**: Lihat `requirements.txt`
 
 ---
 
 ## 📝 Lisensi
 
 MIT License — bebas digunakan dan dimodifikasi.
+
+---
+
+## 📖 Dokumentasi Tambahan
+
+- [QUICKSTART.md](QUICKSTART.md) - Panduan cepat untuk pengguna baru
+- [PRODUCTION_STATUS.md](PRODUCTION_STATUS.md) - Status fitur dan debugging
+- [DEBUG_REPORT.md](DEBUG_REPORT.md) - Laporan bug yang sudah diperbaiki
+- [FIX_API_GUIDE.md](FIX_API_GUIDE.md) - Panduan troubleshooting API
+- [CHAT_HISTORY_FEATURE.md](CHAT_HISTORY_FEATURE.md) - Dokumentasi fitur riwayat chat
+
+**Terakhir diperbarui**: May 17, 2026

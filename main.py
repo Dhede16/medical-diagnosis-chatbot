@@ -9,9 +9,7 @@ from app import MedAIApp
 
 def on_login_success(username: str):
     """Dipanggil oleh LoginApp setelah login berhasil."""
-    main_app = MedAIApp()
-    # Opsional: kirim username ke MedAIApp jika dibutuhkan
-    # main_app.set_user(username)
+    main_app = MedAIApp(username=username)
     main_app.mainloop()
 
 
