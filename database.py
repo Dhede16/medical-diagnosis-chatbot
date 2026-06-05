@@ -1,23 +1,18 @@
-"""
-database.py — Konfigurasi & helper database MySQL (XAMPP)
-Digunakan oleh: login.py (dan modul lain yang butuh koneksi DB)
-"""
-
 import hashlib
 import mysql.connector
 from mysql.connector import Error
 
-# ─── Konfigurasi Database ─────────────────────────────────────────────────────
+#Konfigurasi Database
 DB_CONFIG = {
     "host":     "localhost",
     "user":     "root",
-    "password": "",        # isi jika XAMPP pakai password
+    "password": "",        
     "port":     3306,
 }
 DB_NAME = "db_carebot_app"
 
 
-# ─── Helper ───────────────────────────────────────────────────────────────────
+#Helper 
 def sha(text: str) -> str:
     """Hash string dengan SHA-256."""
     return hashlib.sha256(text.encode()).hexdigest()
@@ -28,7 +23,7 @@ def get_conn():
     return mysql.connector.connect(**DB_CONFIG, database=DB_NAME)
 
 
-# ─── Setup Database ───────────────────────────────────────────────────────────
+#Setup Database
 def setup_database() -> tuple[bool, str]:
     """
     Buat database & tabel jika belum ada.

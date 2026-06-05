@@ -1,30 +1,11 @@
-"""
-config.py — Konstanta warna, font, dan pengaturan aplikasi MedAI.
+import os 
 
-⚠️ PENTING: ISI GROQ_API_KEY DI BAWAH SEBELUM MENJALANKAN APLIKASI
+GROQ_API_KEY  = ""   # ISI API DISINI
 
-Cara mendapatkan API Key:
-1. Buka https://console.groq.com
-2. Login/Register dengan akun Anda
-3. Pergi ke Settings → API Keys
-4. Click "Create New API Key"
-5. Copy API Key 
-6. Paste di bawah, ganti placeholder
-
-Butuh bantuan? Baca: FIX_API_GUIDE.md
-"""
-
-# ── Groq API Key — MASUKKAN API KEY ANDA DI SINI ────────────────────────────
-# Format: gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-# Jangan gunakan yang ini, ambil dari https://console.groq.com
-GROQ_API_KEY  = "API KEY HERE"   # ← ISI DISINI!
-
-# ── Model Groq ───────────────────────────────────────────────────────────────
 GROQ_MODEL    = "llama-3.3-70b-versatile"
 GROQ_TEMP     = 0.4
 GROQ_MAX_TOK  = 1024
 
-# ── Warna ChatGPT-style dark ─────────────────────────────────────────────────
 BG_MAIN       = "#212121"
 BG_SIDEBAR    = "#171717"
 BG_INPUT      = "#2F2F2F"
@@ -37,13 +18,11 @@ BTN_HOVER     = "#404040"
 ACCENT_GREEN  = "#10A37F"
 ACCENT_RED    = "#EF4444"
 
-# ── Ukuran & Font ────────────────────────────────────────────────────────────
 WINDOW_WIDTH   = 1100
 WINDOW_HEIGHT  = 760
 SIDEBAR_WIDTH  = 260
 FONT_FAMILY    = "Segoe UI"
 
-# ── System Prompt ─────────────────────────────────────────────────────────────
 SYSTEM_PROMPT = """Kamu adalah asisten medis AI bernama MedAI yang membantu menganalisis gejala penyakit.
 
 Ketika pengguna menyebutkan gejala, kamu harus:

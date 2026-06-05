@@ -1,7 +1,3 @@
-"""
-widgets/typing_indicator.py - Typing indicator ChatGPT-style (3 titik).
-"""
-
 import customtkinter as ctk
 from config import TEXT_MUTED, FONT_FAMILY
 
@@ -42,6 +38,9 @@ class TypingIndicator(ctk.CTkFrame):
         self._animate()
 
     def _animate(self):
+        if not self.winfo_exists():
+            return
+
         self._idx = (self._idx + 1) % len(self._STATES)
         self._dot_lbl.configure(text=self._STATES[self._idx])
         self._job = self.after(350, self._animate)

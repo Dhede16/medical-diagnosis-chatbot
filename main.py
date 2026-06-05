@@ -1,14 +1,9 @@
-"""
-MedAI — Asisten Prediksi Penyakit
-Entry point utama aplikasi.
-"""
-
 import login
 from app import MedAIApp
 
 
 def on_login_success(username: str):
-    """Dipanggil oleh LoginApp setelah login berhasil."""
+    # Dipanggil oleh LoginApp setelah login berhasil
     main_app = MedAIApp(username=username)
     main_app.mainloop()
 

@@ -1,18 +1,8 @@
-"""
-utils/formatter.py — Konversi markdown sederhana ke format yang bisa
-ditampilkan di widget CTkTextbox dengan tag warna/font.
-"""
-
 import re
 from typing import List, Tuple
 
 
 def parse_markdown(text: str) -> List[Tuple[str, str]]:
-    """
-    Memecah teks markdown menjadi list (segment, tag).
-    Tag yang tersedia: 'bold', 'bullet', 'heading2', 'heading3', 'normal'.
-    Return list of (text_piece, tag_name).
-    """
     segments: List[Tuple[str, str]] = []
     lines = text.split("\n")
 
@@ -47,7 +37,7 @@ def parse_markdown(text: str) -> List[Tuple[str, str]]:
 
 
 def _inline_bold(text: str, base_tag: str) -> List[Tuple[str, str]]:
-    """Pecah teks dengan **bold** menjadi segmen normal + bold."""
+    #Pecah teks dengan **bold** menjadi segmen normal + bold
     parts: List[Tuple[str, str]] = []
     pattern = re.compile(r'\*\*(.+?)\*\*')
     last = 0
@@ -62,7 +52,7 @@ def _inline_bold(text: str, base_tag: str) -> List[Tuple[str, str]]:
 
 
 def strip_markdown(text: str) -> str:
-    """Menghapus simbol markdown untuk keperluan clipboard/export."""
+    #Menghapus simbol markdown untuk keperluan clipboard/export
     text = re.sub(r'\*\*(.+?)\*\*', r'\1', text)
     text = re.sub(r'^#{1,3}\s+', '', text, flags=re.MULTILINE)
     text = re.sub(r'^[*\-]\s+', '• ', text, flags=re.MULTILINE)

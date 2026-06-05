@@ -1,8 +1,3 @@
-"""
-utils/api_worker.py — Worker thread untuk request ke Groq API.
-Menggunakan requests library untuk reliability lebih baik.
-"""
-
 import threading
 import json
 from config import GROQ_MODEL, GROQ_TEMP, GROQ_MAX_TOK
@@ -18,12 +13,6 @@ except ImportError:
 
 
 class GroqWorker(threading.Thread):
-    """
-    Thread terpisah agar UI tidak freeze saat menunggu respons API.
-    Callback `on_result(text)` dan `on_error(msg)` dipanggil dari thread ini;
-    pastikan update UI memakai widget.after() di sisi pemanggil.
-    """
-
     def __init__(self, api_key: str, messages: list,
                  on_result, on_error):
         super().__init__(daemon=True)

@@ -1,9 +1,3 @@
-"""
-Login App — CustomTkinter + MySQL (XAMPP)
-Jalankan: python login_app.py
-Install : pip install customtkinter mysql-connector-python
-"""
-
 from typing import Any, cast
 from database import setup_database, get_conn, sha, DB_CONFIG, DB_NAME
 from config import C 
@@ -14,16 +8,11 @@ import hashlib
 import threading
 
 
-# ─── App ──────────────────────────────────────────────────────────────────────
+# App
 class LoginApp(ctk.CTk):
     def __init__(self, on_success=None):
-        """
-        on_success : callable | None
-            Jika diberikan, akan dipanggil dengan argumen (username: str)
-            setelah login berhasil, kemudian window login ditutup otomatis.
-        """
         super().__init__()
-        self._on_success = on_success  # callback ke main
+        self._on_success = on_success
 
         self.title("CareBot — Login")
         self.geometry("420x580")
@@ -31,26 +20,23 @@ class LoginApp(ctk.CTk):
         self.resizable(True, True)
         self.configure(fg_color=C["bg"])
 
-        # Centre window
         self.update_idletasks()
         x = (self.winfo_screenwidth()  - 420) // 2
         y = (self.winfo_screenheight() - 580) // 2
         self.geometry(f"+{x}+{y}")
 
-        self._tab = "login"          # "login" | "register"
+        self._tab = "login"
         self._show_pw_login    = False
         self._show_pw_register = False
 
         self._build_ui()
         self._init_db()
 
-    # ── Build UI ─────────────────────────────────────────────────────────────
+    # Build UI 
     def _build_ui(self):
-        # Outer padding frame
         self.outer = ctk.CTkFrame(self, fg_color=C["bg"])
         self.outer.pack(fill="both", expand=True, padx=32, pady=32)
 
-        # ── Logo row
         logo_row = ctk.CTkFrame(self.outer, fg_color="transparent")
         logo_row.pack(fill="x", pady=(0, 22))
 
@@ -65,7 +51,6 @@ class LoginApp(ctk.CTk):
                      font=("Helvetica", 20, "bold"),
                      text_color=C["text"]).pack(side="left", anchor="center")
 
-        # ── Card frame
         self.card = ctk.CTkFrame(self.outer, fg_color=C["card"],
                                  corner_radius=14,
                                  border_width=1, border_color=C["border"])
@@ -74,7 +59,6 @@ class LoginApp(ctk.CTk):
         inner = ctk.CTkFrame(self.card, fg_color="transparent")
         inner.pack(fill="both", expand=True, padx=28, pady=24)
 
-        # ── Title
         self.lbl_title = ctk.CTkLabel(inner, text="Masuk ke akun Anda",
                                       font=("Helvetica", 17, "bold"),
                                       text_color=C["text"])
@@ -85,7 +69,6 @@ class LoginApp(ctk.CTk):
                                     text_color=C["text_muted"])
         self.lbl_sub.pack(pady=(0, 16))
 
-        # ── Tab bar
         tab_frame = ctk.CTkFrame(inner, fg_color=C["input"], corner_radius=8)
         tab_frame.pack(fill="x", pady=(0, 18))
         tab_frame.columnconfigure(0, weight=1)
@@ -105,25 +88,21 @@ class LoginApp(ctk.CTk):
             command=lambda: self._switch("register"))
         self.tab_reg.grid(row=0, column=1, padx=3, pady=3, sticky="ew")
 
-        # ── Alert label
         self.alert_var = ctk.StringVar(value="")
         self.alert_lbl = ctk.CTkLabel(inner, textvariable=self.alert_var,
                                       font=("Helvetica", 12),
                                       text_color=C["error"],
                                       wraplength=320, justify="left")
         self.alert_lbl.pack(fill="x", pady=(0, 6))
-        self.alert_lbl.pack_forget()   # hidden initially
+        self.alert_lbl.pack_forget()
 
-        # ── Login Panel
         self.panel_login = ctk.CTkFrame(inner, fg_color="transparent")
         self._build_login_panel(self.panel_login)
         self.panel_login.pack(fill="both", expand=True)
 
-        # ── Register Panel (hidden)
         self.panel_reg = ctk.CTkFrame(inner, fg_color="transparent")
         self._build_register_panel(self.panel_reg)
 
-        # ── DB status bar at bottom
         self.status_var = ctk.StringVar(value="⏳ Menghubungkan ke database…")
         self.status_lbl = ctk.CTkLabel(self.outer, textvariable=self.status_var,
                                        font=("Helvetica", 11),
@@ -146,7 +125,6 @@ class LoginApp(ctk.CTk):
         return e
 
     def _pw_row(self, parent, placeholder, on_toggle):
-        """Password entry + show/hide button in a row."""
         row = ctk.CTkFrame(parent, fg_color="transparent")
         row.pack(fill="x")
         row.columnconfigure(0, weight=1)
@@ -170,7 +148,7 @@ class LoginApp(ctk.CTk):
         toggle.grid(row=0, column=1, padx=(6, 0))
         return entry
 
-    # ── Login panel ──────────────────────────────────────────────────────────
+    # Login panel
     def _build_login_panel(self, parent):
         self._field_label(parent, "Username")
         self.ent_lu = self._entry(parent, "Masukkan username")
@@ -186,11 +164,10 @@ class LoginApp(ctk.CTk):
             command=self._do_login)
         self.btn_login.pack(fill="x", pady=(18, 0))
 
-        # Enter key
         self.ent_lu.bind("<Return>", lambda e: self._do_login())
         self.ent_lp.bind("<Return>", lambda e: self._do_login())
 
-    # ── Register panel ───────────────────────────────────────────────────────
+    # Register panel 
     def _build_register_panel(self, parent):
         self._field_label(parent, "Username")
         self.ent_ru = self._entry(parent, "Buat username baru")
@@ -209,7 +186,7 @@ class LoginApp(ctk.CTk):
         self.ent_ru.bind("<Return>", lambda e: self._do_register())
         self.ent_rp.bind("<Return>", lambda e: self._do_register())
 
-    # ── Toggle password visibility ───────────────────────────────────────────
+    # Toggle password visibility 
     def _toggle_login_pw(self, entry, btn):
         self._show_pw_login = not self._show_pw_login
         entry.configure(show="" if self._show_pw_login else "●")
@@ -220,7 +197,7 @@ class LoginApp(ctk.CTk):
         entry.configure(show="" if self._show_pw_register else "●")
         btn.configure(text="🙈" if self._show_pw_register else "👁")
 
-    # ── Tab switch ───────────────────────────────────────────────────────────
+    # Tab switch 
     def _switch(self, tab):
         self._tab = tab
         self._hide_alert()
@@ -248,7 +225,7 @@ class LoginApp(ctk.CTk):
                                      text_color=C["text_muted"],
                                      font=("Helvetica", 13))
 
-    # ── Alert helpers ─────────────────────────────────────────────────────────
+    # Alert helpers 
     def _show_alert(self, msg, color=None):
         self.alert_var.set(msg)
         self.alert_lbl.configure(text_color=color or C["error"])
@@ -258,7 +235,7 @@ class LoginApp(ctk.CTk):
     def _hide_alert(self):
         self.alert_lbl.pack_forget()
 
-    # ── Success dialog ────────────────────────────────────────────────────────
+    # Success dialog 
     def _show_success(self, title, msg):
         dlg = ctk.CTkToplevel(self)
         dlg.title("Berhasil")
@@ -267,7 +244,6 @@ class LoginApp(ctk.CTk):
         dlg.configure(fg_color=C["card"])
         dlg.grab_set()
 
-        # Centre on parent
         self.update_idletasks()
         px = self.winfo_x() + (self.winfo_width()  - 320) // 2
         py = self.winfo_y() + (self.winfo_height() - 220) // 2
@@ -286,7 +262,7 @@ class LoginApp(ctk.CTk):
                       corner_radius=8, font=("Helvetica", 13, "bold"),
                       command=dlg.destroy).pack()
 
-    # ── DB init (background thread) ───────────────────────────────────────────
+    # DB init (background thread) 
     def _init_db(self):
         def task():
             ok, msg = setup_database()
@@ -298,7 +274,7 @@ class LoginApp(ctk.CTk):
                     "Gagal koneksi database. Pastikan XAMPP MySQL berjalan.", C["error"]))
         threading.Thread(target=task, daemon=True).start()
 
-    # ── Login action ──────────────────────────────────────────────────────────
+    # Login action 
     def _do_login(self):
         self._hide_alert()
         username = self.ent_lu.get().strip()
@@ -324,14 +300,12 @@ class LoginApp(ctk.CTk):
                 if user:
                     uname = str(user['username'])
                     if self._on_success:
-                        # Ada callback → tutup window login, buka window berikutnya
                         self.after(0, lambda u=uname: self._handle_success(u))
                     else:
-                        # Tidak ada callback → tampilkan dialog sukses seperti semula
                         self.after(0, lambda: self._show_success(
                             "Login Berhasil! 🎉",
                             f"Selamat datang, {uname}!"))
-                    self.after(0, self._reset_login_btn)
+                        self.after(0, self._reset_login_btn)
                 else:
                     self.after(0, lambda: self._show_alert("Username atau password salah."))
                     self.after(0, self._reset_login_btn)
@@ -347,11 +321,11 @@ class LoginApp(ctk.CTk):
 
     def _handle_success(self, username: str):
         """Tutup window login lalu jalankan callback on_success."""
-        self.destroy()                   # tutup LoginApp
+        self.destroy()
         if self._on_success:
-            self._on_success(username)   # buka window berikutnya
+            self._on_success(username)
 
-    # ── Register action ───────────────────────────────────────────────────────
+    # Register action 
     def _do_register(self):
         self._hide_alert()
         username = self.ent_ru.get().strip()
@@ -394,7 +368,7 @@ class LoginApp(ctk.CTk):
         self.btn_reg.configure(state="normal", text="Buat Akun")
 
 
-# ─── Entry Point ──────────────────────────────────────────────────────────────
+# Entry Point
 if __name__ == "__main__":
     app = LoginApp()
     app.mainloop()

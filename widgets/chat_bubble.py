@@ -1,9 +1,3 @@
-"""
-widgets/chat_bubble.py - Gelembung chat ChatGPT-style.
-User  → bubble abu-abu, rata kanan, max ~55% lebar
-Bot   → tanpa background, lebar penuh, dengan avatar kiri
-"""
-
 import tkinter.font as tkfont
 import customtkinter as ctk
 from utils.formatter import parse_markdown
@@ -13,7 +7,7 @@ from config import (
     FONT_FAMILY,
 )
 
-MAX_WIDTH = 700   # px maksimum lebar bubble
+MAX_WIDTH = 700   
 
 
 class ChatBubble(ctk.CTkFrame):
@@ -30,9 +24,39 @@ class ChatBubble(ctk.CTkFrame):
         else:
             self._build_bot(text)
 
-    # ── User bubble ───────────────────────────────────────────────────────
+    #Estimasi tinggi dengan memperhitungkan word wrap
+    def _estimate_height(self, text: str, font_size: int, line_height: int,
+                         box_width: int, padding: int) -> int:
+        try:
+            f = tkfont.Font(family=FONT_FAMILY, size=font_size)
+            usable_width = max(box_width - padding, 1)
+            total_lines = 0
+
+            for raw_line in text.split("\n"):
+                if raw_line == "":
+                    total_lines += 1
+                    continue
+                # Ukur berapa baris visual yang dibutuhkan baris ini
+                words = raw_line.split(" ")
+                current_w = 0
+                visual_lines = 1
+                for word in words:
+                    word_w = f.measure(word + " ")
+                    if current_w + word_w > usable_width and current_w > 0:
+                        visual_lines += 1
+                        current_w = word_w
+                    else:
+                        current_w += word_w
+                total_lines += visual_lines
+
+            return max(total_lines * line_height + padding, line_height * 2)
+        except Exception:
+            # Fallback: hitung naif jika font tidak tersedia
+            lines = text.count("\n") + 1
+            return max(lines * line_height + padding, line_height * 2)
+
+    #User bubble 
     def _build_user(self, text: str):
-        # Outer row: spacer + bubble
         outer = ctk.CTkFrame(self, fg_color="transparent")
         outer.grid(row=0, column=0, sticky="ew", padx=40, pady=(6, 6))
         outer.grid_columnconfigure(0, weight=1)
@@ -44,7 +68,7 @@ class ChatBubble(ctk.CTkFrame):
             fg_color=(USER_BUBBLE, USER_BUBBLE),
             border_width=0,
             corner_radius=18,
-            text_color= TEXT_PRIMARY,
+            text_color=TEXT_PRIMARY,
             font=ctk.CTkFont(family=FONT_FAMILY, size=14),
             cursor="arrow",
             width=MAX_WIDTH,
@@ -56,16 +80,21 @@ class ChatBubble(ctk.CTkFrame):
         self._insert_plain(tb, text)
         tb.configure(state="disabled")
 
-        lines = text.count("\n") + 1
-        tb.configure(height=max(lines * 24 + 24, 48))
+        height = self._estimate_height(
+            text,
+            font_size=14,
+            line_height=24,
+            box_width=MAX_WIDTH,
+            padding=24,
+        )
+        tb.configure(height=height)
 
-    # ── Bot bubble ────────────────────────────────────────────────────────
+    #Bot bubble 
     def _build_bot(self, text: str):
         outer = ctk.CTkFrame(self, fg_color="transparent")
         outer.grid(row=0, column=0, sticky="ew", padx=(16, 60), pady=(6, 6))
         outer.grid_columnconfigure(1, weight=1)
 
-        # Avatar
         avatar = ctk.CTkLabel(
             outer, text="🏥",
             width=32, height=32,
@@ -75,15 +104,14 @@ class ChatBubble(ctk.CTkFrame):
         )
         avatar.grid(row=0, column=0, padx=(0, 12), sticky="n", pady=(4, 0))
 
-        # Textbox tanpa background
         tb = ctk.CTkTextbox(
             outer,
             wrap="word",
-            activate_scrollbars=False,
+            activate_scrollbars=True,
             fg_color="transparent",
             border_width=0,
             corner_radius=0,
-            text_color= TEXT_PRIMARY,
+            text_color=TEXT_PRIMARY,
             font=ctk.CTkFont(family=FONT_FAMILY, size=14),
             cursor="arrow",
         )
@@ -93,10 +121,16 @@ class ChatBubble(ctk.CTkFrame):
         self._insert_formatted(tb, text)
         tb.configure(state="disabled")
 
-        lines = max(text.count("\n") + 1, 1)
-        tb.configure(height=min(max(lines * 22 + 20, 44), 600))
+        height = self._estimate_height(
+            text,
+            font_size=14,
+            line_height=22,
+            box_width=MAX_WIDTH,
+            padding=20,
+        )
+        tb.configure(height=min(height, 500))
 
-    # ── Text inserters ────────────────────────────────────────────────────
+    #Text inserters 
     def _insert_plain(self, tb: ctk.CTkTextbox, text: str):
         """User bubble: plain text, no markdown."""
         tk_text = tb._textbox
